@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migora Launcher — Minecraft Client Launcher</title>
+<link rel="icon" href="index_files/icon.jpg" type="image/jpeg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#030303;--card:#0a0a0a;--border:rgba(255,255,255,.04);
+--white:#f0f0f0;--gray:#888;--dim:#444;
+--purple:#9333ea;--pink:#ec4899;--red:#ef4444;--blue:#3b82f6;
+--grad:linear-gradient(135deg,var(--purple),var(--pink));
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--purple);border-radius:4px}
+a{color:inherit;text-decoration:none}
+
+.dock{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:6px;padding:8px 12px;background:rgba(20,20,20,.85);border:1px solid rgba(255,255,255,.06);border-radius:22px;backdrop-filter:blur(40px) saturate(200%);box-shadow:0 16px 64px rgba(0,0,0,.6)}
+.dock a{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;transition:all .3s;position:relative}
+.dock a:hover{background:rgba(255,255,255,.08);transform:translateY(-8px) scale(1.15)}
+.dock a.active{background:rgba(147,51,234,.12);box-shadow:0 0 20px rgba(147,51,234,.2)}
+.dock a svg{width:20px;height:20px;stroke:var(--gray);fill:none;stroke-width:1.8;transition:all .3s}
+.dock a:hover svg{stroke:var(--white)}
+.dock a .tip{position:absolute;bottom:calc(100% + 14px);left:50%;transform:translateX(-50%);background:rgba(20,20,20,.95);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:all .3s;backdrop-filter:blur(20px)}
+.dock a:hover .tip{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+.global-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);
+background-size:72px 72px;
+mask-image:radial-gradient(ellipse 80% 50% at 50% 50%,black 20%,transparent 70%)}
+
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.018;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")}
+
+.top{padding:120px 48px 100px;position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.top-orb{position:absolute;border-radius:50%;filter:blur(180px);opacity:.08}
+.top-orb.a{width:700px;height:700px;background:var(--purple);top:-200px;right:-100px}
+.top-orb.b{width:500px;height:500px;background:var(--pink);bottom:-200px;left:-100px}
+.top-orb.c{width:400px;height:400px;background:var(--blue);top:40%;left:30%;opacity:.04}
+.top-vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,var(--bg) 75%);pointer-events:none;z-index:1}
+.top-content{position:relative;z-index:2;text-align:center;max-width:900px}
+.top-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 6px 6px 16px;border-radius:100px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);font-size:13px;color:var(--gray);margin-bottom:40px;transition:all .3s}
+.top-pill:hover{border-color:rgba(147,51,234,.3);background:rgba(147,51,234,.04)}
+.top-pill .live{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pl 2s infinite}
+@keyframes pl{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
+.top-pill .tag{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:600}
+.top h1{font-size:clamp(72px,12vw,140px);font-weight:900;line-height:.82;letter-spacing:-6px;margin-bottom:28px}
+.top h1 .g{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.top p.sub{font-size:17px;color:var(--gray);max-width:440px;margin:0 auto 48px;line-height:1.7}
+.top-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:14px;font-size:14px;font-weight:600;transition:all .35s cubic-bezier(.16,1,.3,1);cursor:pointer;border:none;position:relative;overflow:hidden}
+.btn-f{background:var(--grad);color:#fff;box-shadow:0 4px 24px rgba(147,51,234,.3),inset 0 1px 0 rgba(255,255,255,.15)}
+.btn-f:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 40px rgba(147,51,234,.4)}
+.btn-g{background:rgba(255,255,255,.04);color:var(--white);border:1px solid rgba(255,255,255,.06)}
+.btn-g:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);transform:translateY(-2px)}
+.btn svg{width:18px;height:18px}
+.top-stats{display:flex;gap:48px;justify-content:center;margin-top:64px}
+.top-stat{display:flex;flex-direction:column;align-items:center}
+.top-stat .n{font-size:28px;font-weight:800;letter-spacing:-1px}
+.top-stat .l{font-size:11px;color:var(--dim);margin-top:6px;letter-spacing:3px;text-transform:uppercase}
+.top-stat .n.p{color:var(--purple)}
+
+.lines{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.line-v,.line-h{position:absolute;background:rgba(255,255,255,.015)}
+.line-v{width:1px;height:100%;left:var(--x)}
+.line-h{height:1px;width:100%;top:var(--y)}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);margin:0 48px}
+
+.preview{padding:40px 48px 160px;position:relative;max-width:1200px;margin:0 auto}
+.preview-frame{position:relative;border-radius:20px;border:1px solid rgba(255,255,255,.04);overflow:hidden;background:var(--card);box-shadow:0 80px 200px rgba(0,0,0,.5)}
+.preview-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04)}
+.preview-dot{width:10px;height:10px;border-radius:50%;background:var(--dim);opacity:.4}
+.preview-dot.r{background:var(--red);opacity:.7}.preview-dot.y{background:#facc15;opacity:.7}.preview-dot.g{background:#22c55e;opacity:.7}
+.preview-url{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+.preview-body{aspect-ratio:16/9;background:linear-gradient(135deg,rgba(147,51,234,.03),rgba(236,72,153,.02));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.preview-body img{width:100%;height:100%;object-fit:cover;opacity:.9}
+.preview-glow{position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:120%;height:100%;background:radial-gradient(ellipse,rgba(147,51,234,.08),transparent 60%);pointer-events:none}
+
+.sec{padding:120px 48px;max-width:1200px;margin:0 auto}
+.sec-top{text-align:center;margin-bottom:80px}
+.sec-pill{display:inline-block;padding:4px 14px;border-radius:100px;border:1px solid rgba(255,255,255,.06);font-size:11px;font-weight:600;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
+.sec h2{font-size:clamp(32px,4vw,48px);font-weight:800;letter-spacing:-2px;margin-bottom:16px}
+.sec .sub{font-size:15px;color:var(--gray);max-width:420px;margin:0 auto;line-height:1.7}
+
+.clients-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.c-card{background:var(--card);padding:32px;border:1px solid var(--border);transition:all .4s;cursor:pointer;position:relative;overflow:hidden}
+.c-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(147,51,234,.06),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none}
+.c-card:hover{border-color:rgba(147,51,234,.12);background:rgba(255,255,255,.01)}.c-card:hover::after{opacity:1}
+.c-card .c-card-img{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:16px;background:rgba(255,255,255,.02)}
+.c-card .c-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.c-card:hover .c-card-img img{transform:scale(1.05)}
+.c-card h3{font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:.3px}
+.c-card p{font-size:12px;color:var(--dim);line-height:1.6}
+.c-card .tag{position:absolute;top:16px;right:16px;padding:3px 10px;border-radius:100px;background:rgba(147,51,234,.08);color:var(--purple);font-size:10px;font-weight:600;letter-spacing:1px}
+
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:2px}
+.bento-card{background:var(--card);padding:48px;border:1px solid var(--border);position:relative;overflow:hidden;transition:all .4s}
+.bento-card:hover{border-color:rgba(255,255,255,.06)}
+.bento-card .num{font-size:64px;font-weight:900;letter-spacing:-4px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.15;position:absolute;top:20px;right:32px}
+.bento-card h3{font-size:20px;font-weight:700;margin-bottom:12px}
+.bento-card p{font-size:14px;color:var(--gray);line-height:1.7;max-width:360px}
+.bento-card.wide{grid-column:span 2}
+
+.timeline{max-width:700px;margin:0 auto;position:relative;padding-left:48px}
+.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--purple),var(--pink),transparent)}
+.t-item{padding:0 0 56px;position:relative}
+.t-item:last-child{padding-bottom:0}
+.t-dot{position:absolute;left:-40px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--grad);box-shadow:0 0 16px rgba(147,51,234,.4)}
+.t-item h3{font-size:16px;font-weight:700;margin-bottom:8px}
+.t-item p{font-size:14px;color:var(--gray);line-height:1.7}
+
+.text-scroll{overflow:hidden;padding:48px 0;border-top:1px solid rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.03)}
+.text-scroll-inner{display:flex;gap:64px;animation:scroll 35s linear infinite;width:max-content}
+.text-scroll span{font-size:12px;font-weight:600;color:var(--dim);letter-spacing:5px;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.bottom{padding:160px 48px;text-align:center;position:relative;overflow:hidden}
+.bottom-glow{position:absolute;bottom:-100px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(147,51,234,.15),transparent 70%);filter:blur(100px)}
+.bottom h2{font-size:clamp(48px,8vw,88px);font-weight:900;letter-spacing:-4px;margin-bottom:20px;position:relative;z-index:1}
+.bottom p{font-size:16px;color:var(--gray);margin-bottom:40px;position:relative;z-index:1}
+
+footer{padding:40px 48px;border-top:1px solid rgba(255,255,255,.03);display:flex;align-items:center;justify-content:space-between}
+footer .left{display:flex;align-items:center;gap:12px}
+footer img{width:28px;height:28px;border-radius:8px}
+footer span{font-weight:700;font-size:14px;letter-spacing:2px}
+footer .right{display:flex;gap:28px}
+footer .right a{font-size:13px;color:var(--dim);transition:color .2s}.footer .right a:hover{color:var(--white)}
+
+.intro{position:fixed;inset:0;z-index:99999;background:#030303;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.intro-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(147,51,237,.06),transparent 60%)}
+.intro-orb{position:absolute;border-radius:50%;filter:blur(180px);opacity:0;animation:introOrbIn 2s ease-out forwards}
+.intro-orb.ib1{width:500px;height:500px;background:var(--purple);top:-200px;right:-100px;animation-delay:.2s}
+.intro-orb.ib2{width:400px;height:400px;background:var(--pink);bottom:-200px;left:-100px;animation-delay:.4s}
+@keyframes introOrbIn{0%{opacity:0;transform:scale(.6)}100%{opacity:.08;transform:scale(1)}}
+.intro-center{position:relative;z-index:10;display:flex;align-items:center;gap:24px;opacity:0;transform:translateY(20px);animation:introCenterIn 1s .3s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes introCenterIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+.intro-logo{width:72px;height:72px;border-radius:20px;filter:drop-shadow(0 0 40px rgba(147,51,237,.3))}
+.intro-text{display:flex;flex-direction:column;gap:8px}
+.intro-name{font-family:'Inter',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.5px;opacity:0;animation:introNameIn 1s .6s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes introNameIn{0%{opacity:0;transform:translateX(-10px)}100%{opacity:1;transform:translateX(0)}}
+.intro-line-bar{width:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:2px;animation:introBarIn 1s .9s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes introBarIn{0%{width:0}100%{width:100%}}
+.intro-desc{font-size:14px;color:var(--dim);opacity:0;animation:introDescIn 1s 1.1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes introDescIn{0%{opacity:0;transform:translateY(5px)}100%{opacity:.5;transform:translateY(0)}}
+.intro-bottom{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;z-index:10;opacity:0;animation:introBottomIn 1s 1.3s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes introBottomIn{0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)}}
+.intro-loading{width:200px;height:2px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.intro-loading-bar{height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:2px;animation:introLoad 1.5s 1.5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes introLoad{0%{width:0}100%{width:100%}}
+.intro-loading-text{font-size:11px;color:var(--dim);letter-spacing:4px;text-transform:uppercase}
+
+@media(max-width:1024px){.clients-grid{grid-template-columns:repeat(2,1fr)}.bento-card.wide{grid-column:span 2}}
+@media(max-width:768px){.top{padding:100px 20px 60px}.top h1{letter-spacing:-2px}.top-stats{gap:24px;flex-wrap:wrap}.sec{padding:80px 20px}.clients-grid{grid-template-columns:1fr}.bento{grid-template-columns:1fr}.bento-card.wide{grid-column:span 1}.bottom{padding:100px 20px}footer{flex-direction:column;gap:20px;text-align:center}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro">
+<div class="intro-bg"></div>
+<div class="intro-orb ib1"></div><div class="intro-orb ib2"></div>
+<div class="intro-center">
+<img src="index_files/icon.jpg" class="intro-logo" alt="">
+<div class="intro-text">
+<div class="intro-name">Migora Launcher</div>
+<div class="intro-line-bar"></div>
+<div class="intro-desc">55+ клиентов. Все версии Minecraft.</div>
+</div>
+</div>
+<div class="intro-bottom">
+<div class="intro-loading">
+<div class="intro-loading-bar"></div>
+</div>
+<div class="intro-loading-text">Загрузка...</div>
+</div>
+</div>
+
+<div class="global-grid"></div>
+<div class="grain"></div>
+
+<div class="lines">
+<div class="line-v" style="--x:20%"></div>
+<div class="line-v" style="--x:40%"></div>
+<div class="line-v" style="--x:60%"></div>
+<div class="line-v" style="--x:80%"></div>
+<div class="line-h" style="--y:25%"></div>
+<div class="line-h" style="--y:50%"></div>
+<div class="line-h" style="--y:75%"></div>
+</div>
+
+<section class="top">
+<div class="top-orb a"></div><div class="top-orb b"></div><div class="top-orb c"></div>
+<div class="top-vig"></div>
+<div class="top-content">
+<a href="#" class="top-pill"><span class="live"></span>Релиз Migora Launcher <span class="tag">v0.3.5</span></a>
+<h1>MIGORA<br><span class="g">LAUNCHER</span></h1>
+<p class="sub">55+ Minecraft клиентов. Встроенная Java. Автоматическая загрузка ассетов. Современный интерфейс.</p>
+<div class="top-btns">
+<a href="#" class="btn btn-f" id="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать бесплатно</a>
+<a href="https://t.me/migodihvh" target="_blank" class="btn btn-g"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>Telegram</a>
+</div>
+<div class="top-stats">
+<div class="top-stat"><div class="n p">55+</div><div class="l">Клиентов</div></div>
+<div class="top-stat"><div class="n">0</div><div class="l">Рекламы</div></div>
+<div class="top-stat"><div class="n">100%</div><div class="l">Бесплатно</div></div>
+</div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section class="preview">
+<div class="preview-glow"></div>
+<div class="preview-frame">
+<div class="preview-bar"><div class="preview-dot r"></div><div class="preview-dot y"></div><div class="preview-dot g"></div><span class="preview-url">migora://launcher</span></div>
+<div class="preview-body"><img src="index_files/preview.png" alt="Migora Launcher"></div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section class="sec" id="clients">
+<div class="sec-top">
+<div class="sec-pill">Клиенты</div>
+<h2>55+ клиентов</h2>
+<p class="sub">Все популярные Minecraft клиенты в одном месте</p>
+</div>
+<div class="clients-grid" id="clientsGrid">
+</div>
+<div style="text-align:center;margin-top:40px">
+<button onclick="showAllClients()" class="btn btn-g" id="showAllBtn">Показать все (59)</button>
+</div>
+</section>
+
+<section class="sec" id="features">
+<div class="sec-top">
+<div class="sec-pill">Релиз</div>
+<h2>Migora Launcher v0.3.5</h2>
+<p class="sub">Полноценный лаунчер для Minecraft с поддержкой 55+ клиентов</p>
+</div>
+<div class="bento">
+<div class="bento-card"><div class="num">01</div><h3>55+ клиентов</h3><p>Поддержка более 50+ клиентов из коробки. Все популярные моды в одном месте.</p></div>
+<div class="bento-card"><div class="num">02</div><h3>Встроенная Java</h3><p>Не нужно устанавливать Java отдельно. Все версии уже встроены в лаунчер.</p></div>
+<div class="bento-card"><div class="num">03</div><h3>Автообновление</h3><p>Синхронизация с сервером для получения обновлений. Лента всегда свежая.</p></div>
+<div class="bento-card"><div class="num">04</div><h3>Discord RPC</h3><p>Покажи друзьям во что играешь. Автоматическое отображение в Discord.</p></div>
+<div class="bento-card"><div class="num">05</div><h3>Кэширование</h3><p>Кэширование изображений для быстрой загрузки. Мгновенное открытие.</p></div>
+<div class="bento-card wide"><div class="num">06</div><h3>Установщик</h3><p>Размер ~107 МБ. Выбор директории, ярлыки, полная поддержка русского языка. Не требует прав администратора.</p></div>
+</div>
+</section>
+
+<div class="text-scroll">
+<div class="text-scroll-inner">
+<span>OneConfig</span><span>RusherHack</span><span>Meteor</span><span>Wurst</span><span>SalHack</span><span>Inertia</span><span>Ariser</span><span>Luna</span><span>Phantom</span><span>Impact</span><span>Azura</span><span>Vape</span>
+<span>OneConfig</span><span>RusherHack</span><span>Meteor</span><span>Wurst</span><span>SalHack</span><span>Inertia</span><span>Ariser</span><span>Luna</span><span>Phantom</span><span>Impact</span><span>Azura</span><span>Vape</span>
+</div>
+</div>
+
+<section class="sec" id="how">
+<div class="sec-top">
+<div class="sec-pill">Установка</div>
+<h2>Простая установка</h2>
+<p class="sub">Установщик не требует прав администратора</p>
+</div>
+<div class="timeline">
+<div class="t-item"><div class="t-dot"></div><h3>Скачай установщик</h3><p>~107 МБ. Быстрая загрузка с нашего сервера.</p></div>
+<div class="t-item"><div class="t-dot"></div><h3>Запусти установку</h3><p>Выбери директорию. Установщик создаст ярлыки автоматически.</p></div>
+<div class="t-item"><div class="t-dot"></div><h3>Играй</h3><p>Лаунчер готов. 55+ клиентов доступны сразу после установки.</p></div>
+</div>
+</section>
+
+<section class="bottom" id="download">
+<div class="bottom-glow"></div>
+<h2>Готов начать?</h2>
+<p>Скачай Migora Launcher прямо сейчас</p>
+<a href="#" class="btn btn-f" id="dl2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать MigoraLauncher.exe</a>
+</section>
+
+<footer>
+<div class="left"><img src="index_files/icon.jpg" alt="Migora"><span>MIGORA</span></div>
+<div class="right"><a href="https://t.me/migodihvh" target="_blank">Telegram</a><a href="https://github.com" target="_blank">GitHub</a></div>
+</footer>
+
+<nav class="dock">
+<a href="#home" class="active"><span class="tip">Главная</span><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+<a href="#clients"><span class="tip">Клиенты</span><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></a>
+<a href="#how"><span class="tip">Как это</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></a>
+<a href="#download"><span class="tip">Скачать</span><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+<a href="https://t.me/migodihvh" target="_blank"><span class="tip">Telegram</span><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg></a>
+</nav>
+
+<script>
+const clients=[
+{n:"Alek",d:"Клиент для Minecraft 1.21.11",r:3.0,v:2,p:"clients/coSwyYY-qMdhAA.jpg"},
+{n:"AlphaDLC",d:"Клиент для Minecraft 1.21.4",r:4.43,v:14,p:"clients/YG-TwVLYvDyZfg.jpg"},
+{n:"ApexDLC",d:"Клиент для Minecraft 1.21.8",r:1.67,v:3,p:"clients/apexdlc_8dc03cefc808.jpg"},
+{n:"AppleBuy",d:"Клиент для Minecraft 1.21.11",r:4.4,v:15,p:"clients/applebuy_f6ecb3fce407.jpg"},
+{n:"Arbuz",d:"Клиент для Minecraft 1.21.4",r:2.94,v:32,p:"clients/arbuz_9d8021b4360c.jpg"},
+{n:"BladeReload",d:"Клиент для Minecraft 26.2",r:3.67,v:18,p:"clients/8riAjITZyts1lw.jpg"},
+{n:"Buquad",d:"Клиент для Minecraft 1.21.4",r:4.23,v:13,p:"clients/buquad_1453fffefefe.jpg"},
+{n:"Catlavan",d:"Клиент для Minecraft 1.16.5",r:4.66,v:323,p:"clients/catlavan_deb17cb9b365.jpg"},
+{n:"CatLean",d:"Клиент для Minecraft 1.21.11",r:3.95,v:22,p:"clients/catlean_16c448191730.jpg"},
+{n:"Celestial",d:"Чит-клиент для Minecraft Beta 1.16.5",r:4.3,v:100,p:"clients/XXQujy-Wgco5YA.jpg"},
+{n:"CodeDLC",d:"Клиент для Minecraft 1.21.4",r:3.5,v:10,p:"clients/w1m6bl6LLF39Dg.jpg"},
+{n:"Customix",d:"Клиент для Minecraft 1.21.4",r:4.0,v:13,p:"clients/customix_890cd3635636.jpg"},
+{n:"Delta",d:"Клиент для Minecraft 1.21.4",r:4.47,v:337,p:"clients/delta1214_42ec55f4c55c.jpg"},
+{n:"DeviceClient",d:"Клиент для Minecraft 1.21.4",r:4.19,v:16,p:"clients/deviceclient_7b78ff02877f.jpg"},
+{n:"Eclipse",d:"Клиент для Minecraft 1.21.4",r:3.67,v:9,p:"clients/eclipse_77a00fd10548.png"},
+{n:"Essence",d:"Клиент для Minecraft 1.21.4",r:3.0,v:2,p:"clients/V4J2D8diei7WlA.jpg"},
+{n:"ExosWare",d:"Клиент для Minecraft 1.21.4",r:3.93,v:14,p:"clients/tp_HjublwvzaNw.jpg"},
+{n:"Expensive",d:"Клиент для Minecraft 1.21.4",r:4.0,v:48,p:"clients/EjeKWeMpgVgvcg.jpg"},
+{n:"Exploit",d:"Клиент для Minecraft 1.21.11",r:5.0,v:3,p:"clients/Na0ozdzVX7QGmw.jpg"},
+{n:"Hydra",d:"Клиент для Minecraft 1.21.4",r:4.04,v:28,p:"clients/iAU1dyklhG1A0g.jpg"},
+{n:"Javelin",d:"Клиент для Minecraft",r:3.56,v:9,p:"clients/jf-UHs-0KOfUZA.jpg"},
+{n:"Liminar",d:"Клиент для Minecraft 1.21.4",r:4.86,v:7,p:"clients/liminar_70599d4e01a7.jpg"},
+{n:"MeowDLC",d:"Клиент для Minecraft 1.21.4",r:4.06,v:72,p:"clients/meowdlc_bfc86aa4bb04.jpg"},
+{n:"MercuryFree",d:"Клиент для Minecraft 1.21.11",r:4.38,v:26,p:"clients/ftuYbsI3eLn8OQ.jpg"},
+{n:"MerfoDLC",d:"Клиент для Minecraft 1.21.4",r:4.23,v:22,p:"clients/merfodlc_40106bab9e1a.jpg"},
+{n:"Minced",d:"Клиент для Minecraft 1.21.4",r:4.3,v:23,p:"clients/minced_cc10b656f22d.jpg"},
+{n:"Monoton",d:"Клиент для Minecraft 1.16.5",r:4.31,v:49,p:"clients/monoton_8dcf77a5f154.jpg"},
+{n:"Monoware",d:"Клиент для Minecraft 1.21.4",r:3.0,v:2,p:"clients/monoware_5e3cc1ebf023.jpg"},
+{n:"Moonward",d:"Клиент для Minecraft 1.21.4",r:4.0,v:6,p:"clients/moonward_f2e6dfa2e80b.jpg"},
+{n:"MountStar",d:"Клиент для Minecraft 1.21.4",r:3.71,v:7,p:"clients/ZJKgnuIW_qiBOw.jpg"},
+{n:"Mytheria",d:"Клиент для Minecraft 1.21.4",r:3.88,v:17,p:"clients/jR_vBbJNdp0U0A.jpg"},
+{n:"Neverlose",d:"Клиент для Minecraft 1.21.11",r:3.98,v:42,p:"clients/neverlose_d60ecd29f780.jpg"},
+{n:"NewCode",d:"Клиент для Minecraft 1.21.4",r:3.58,v:31,p:"clients/newcode_cc2f9123da8e.jpg"},
+{n:"Night DLC",d:"Клиент для Minecraft 1.21.11",r:3.76,v:54,p:"clients/nightdlc_8570d94eaf35.jpg"},
+{n:"Nightix",d:"Клиент для Minecraft 1.21.11",r:4.23,v:86,p:"clients/nightix_f813a3cecd3d.jpg"},
+{n:"Nuclear",d:"Клиент для Minecraft 1.16.5",r:4.24,v:114,p:"clients/nuclear_65fa3868e368.jpg"},
+{n:"Nursultan",d:"Клиент для Minecraft 1.21.11",r:4.06,v:84,p:"clients/HIR-SDRYvxaCSQ.jpg"},
+{n:"Phobia",d:"Клиент для Minecraft 1.16.5",r:4.69,v:26,p:"clients/6vFbxjgdPpyDhw.jpg"},
+{n:"Plague",d:"Клиент для Minecraft 1.21.4",r:3.25,v:4,p:"clients/zspnMgNi-V6arw.jpg"},
+{n:"Polaris",d:"Клиент для Minecraft 1.21.11",r:3.94,v:17,p:"clients/WVHEs85nJv-NPg.jpg"},
+{n:"Punch",d:"Клиент для Minecraft 1.21.4",r:3.08,v:13,p:"clients/QY8nBrycvFmygw.jpg"},
+{n:"Rich",d:"Клиент для Minecraft 1.21.4",r:4.0,v:10,p:"clients/s1RwQojwzifAmw.jpg"},
+{n:"Rockstar",d:"Клиент для Minecraft 1.21.4",r:4.15,v:47,p:"clients/rockstar_cbf62995c653.png"},
+{n:"Ryzen",d:"Клиент для Minecraft 1.21.4",r:3.14,v:7,p:"clients/ryzen_bd0b62f382c1.jpg"},
+{n:"Skuik",d:"Клиент для Minecraft",r:4.5,v:6,p:"clients/ag65Zdr7W8W4qg.jpg"},
+{n:"SkyCore",d:"Клиент для Minecraft 1.21.4",r:3.82,v:38,p:"clients/skycore_c65e0bf00c06.jpg"},
+{n:"SystemDLC",d:"Клиент для Minecraft 1.21.4",r:4.23,v:53,p:"clients/qxdaKD3qO8PqAg.jpg"},
+{n:"Velka",d:"Клиент для Minecraft 1.21.4",r:4.0,v:17,p:"clients/velka.png"},
+{n:"VenusFree",d:"Клиент для Minecraft 1.16.5",r:4.2,v:10,p:"clients/m4q-Se7pOMZNAA.jpg"},
+{n:"Vesence",d:"Клиент для Minecraft 1.16.5",r:3.83,v:6,p:"clients/jqkS22_Z_MzGGg.jpg"},
+{n:"Vibe",d:"Клиент для Minecraft 1.16.5",r:4.6,v:15,p:"clients/vibe_4440fd527f2f.jpg"},
+{n:"Volon",d:"Клиент для Minecraft 1.21.4",r:4.45,v:11,p:"clients/JCOjXBnzwCir1w.jpg"},
+{n:"Wexside",d:"Клиент для Minecraft 1.16.5",r:3.97,v:67,p:"clients/WthK9tgn7uG3bA.jpg"},
+{n:"Wild",d:"Клиент для Minecraft 1.21.8",r:4.18,v:188,p:"clients/GdumUzsLklgytg.jpg"},
+{n:"Winston",d:"Клиент для Minecraft 1.16.5",r:4.43,v:23,p:"clients/winston_c298f936c87e.jpg"},
+{n:"Wyvern",d:"Клиент для Minecraft 1.21.4",r:3.27,v:11,p:"clients/wyvern_49368fc2e854.jpg"},
+{n:"Zenith",d:"Клиент для Minecraft 1.21.11",r:4.01,v:107,p:"clients/zenith_d9270fd554fb.jpg"}
+];
+
+function renderStars(r){let s='';for(let i=1;i<=5;i++)s+=i<=Math.round(r)?'&#9733;':'&#9734;';return s}
+
+function renderClients(list){
+const g=document.getElementById('clientsGrid');
+g.innerHTML=list.map(c=>`<div class="c-card"><div class="c-card-img"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${c.r>=4.5?'<span class="tag">ТОП</span>':''}<h3>${c.n}</h3><p>${c.d}</p><div style="margin-top:12px;font-size:12px;color:#facc15">${renderStars(c.r)} <span style="color:var(--dim)">(${c.v})</span></div></div>`).join('');
+g.querySelectorAll('.c-card').forEach(card=>{card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')})});
+}
+
+let showAll=false;
+function showAllClients(){
+showAll=!showAll;
+document.getElementById('showAllBtn').textContent=showAll?'Свернуть':'Показать все (59)';
+renderClients(showAll?clients:clients.slice(0,12));
+}
+
+renderClients(clients.slice(0,12));
+
+document.body.style.overflow='hidden';
+window.scrollTo(0,0);
+setTimeout(()=>{const intro=document.getElementById('intro');intro.style.transition='opacity .6s ease, visibility .6s';intro.style.opacity='0';intro.style.visibility='hidden';setTimeout(()=>{intro.remove();document.body.style.overflow='';window.scrollTo(0,0)},600)},2000);
+
+document.getElementById('dl').addEventListener('click',e=>{e.preventDefault();window.location.href='https://github.com/migodihvh/MigoraLauncher/releases/latest/download/MigoraLauncherSetup.exe'});
+document.getElementById('dl2').addEventListener('click',e=>{e.preventDefault();window.location.href='https://github.com/migodihvh/MigoraLauncher/releases/latest/download/MigoraLauncherSetup.exe'});
+</script>
+</body>
+</html>
