@@ -434,7 +434,7 @@ function renderClients(list){
   const g=document.getElementById('clientsGrid');
   g.innerHTML=list.map(c=>{
     const badge=c.r>=4.5?'<span class="badge top">ТОП</span>':c.v<=5?'<span class="badge new">NEW</span>':'';
-    return `<div class="c-card"><div class="c-card-img"><img src="clients/${c.p}" alt="${c.n}" loading="lazy"></div>${badge}<div class="c-card-body"><h3>${c.n}</h3><p>${c.d}</p><div class="stars">${renderStars(c.r)} <span>(${c.v})</span></div></div></div>`;
+    return `<div class="c-card"><div class="c-card-img"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${badge}<div class="c-card-body"><h3>${c.n}</h3><p>${c.d}</p><div class="stars">${renderStars(c.r)} <span>(${c.v})</span></div></div></div>`;
   }).join('');
   g.querySelectorAll('.c-card').forEach(card=>{
     card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')});
