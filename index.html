@@ -189,7 +189,7 @@ footer img{width:20px;height:20px;border-radius:5px}
 <nav id="nav">
   <div class="br"><img src="icon.jpg" alt=""><b>MIGORA</b></div>
   <div class="ln"><a href="#hero">Главная</a><a href="#cl">Клиенты</a><a href="#ft">Возможности</a><a href="#hw">Установка</a></div>
-  <a href="#" class="bt" id="nDl">Скачать</a>
+  <a href="#" class="bt" id="nDl" onclick="goDl(event)">Скачать</a>
 </nav>
 
 <section class="hero" id="hero">
@@ -199,8 +199,8 @@ footer img{width:20px;height:20px;border-radius:5px}
     <h1 class="rv rv1">MIGORA<br>LAUNCHER</h1>
     <p class="d2 rv rv2">55+ Minecraft клиентов. Встроенная Java. Автоматическая загрузка ассетов.</p>
     <div class="hb rv rv3">
-      <a href="#" class="btn bw" id="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать</a>
-      <a href="https://t.me/migodihvh" target="_blank" class="btn bo">Telegram</a>
+      <a href="#" class="btn bw" id="dl" onclick="goDl(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать</a>
+      <a href="https://t.me/migodihvh" target="_blank" rel="noopener noreferrer" class="btn bo">Telegram</a>
     </div>
     <div class="st rv rv3">
       <div><div class="v">55+</div><div class="l">Клиентов</div></div>
@@ -272,12 +272,12 @@ footer img{width:20px;height:20px;border-radius:5px}
   <div class="cta-g"></div>
   <h2 class="rv">Готов начать?</h2>
   <p class="rv rv1">Скачай прямо сейчас</p>
-  <a href="#" class="btn bw rv rv2" id="dl3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>MigoraLauncher.exe</a>
+  <a href="#" class="btn bw rv rv2" id="dl3" onclick="goDl(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>MigoraLauncher.exe</a>
 </section>
 
 <footer>
   <div class="fl"><img src="icon.jpg" alt=""><b>MIGORA</b></div>
-  <div class="fr"><a href="https://t.me/migodihvh" target="_blank">Telegram</a><a href="https://github.com/migodi2/migoralauncher" target="_blank">GitHub</a></div>
+  <div class="fr"><a href="https://t.me/migodihvh" target="_blank" rel="noopener noreferrer">Telegram</a><a href="https://github.com/migodi2/migoralauncher" target="_blank" rel="noopener noreferrer">GitHub</a></div>
 </footer>
 
 <nav class="dock">
@@ -285,10 +285,13 @@ footer img{width:20px;height:20px;border-radius:5px}
   <a href="#cl"><span class="tp">Клиенты</span><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></a>
   <a href="#ft"><span class="tp">Возможности</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
   <a href="#dl2"><span class="tp">Скачать</span><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
-  <a href="https://t.me/migodihvh" target="_blank"><span class="tp">Telegram</span><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg></a>
+  <a href="https://t.me/migodihvh" target="_blank" rel="noopener noreferrer"><span class="tp">Telegram</span><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg></a>
 </nav>
 
 <script>
+const U='https://github.com/migodi2/migoralauncher/releases/download/v1.0/MigoraLauncherSetup.exe';
+function goDl(e){e.preventDefault();e.stopPropagation();location.href=U}
+
 const D=[
 {n:"Alek",d:"Minecraft 1.21.11",p:"coSwyYY-qMdhAA.jpg"},
 {n:"AlphaDLC",d:"Minecraft 1.21.4",p:"YG-TwVLYvDyZfg.jpg"},
@@ -348,31 +351,64 @@ const D=[
 {n:"Wyvern",d:"Minecraft 1.21.4",p:"wyvern_49368fc2e854.jpg"},
 {n:"Zenith",d:"Minecraft 1.21.11",p:"zenith_d9270fd554fb.jpg"}
 ];
+
 let sh=false;
-function ren(l,a){document.getElementById('grid').innerHTML=l.map((c,i)=>{const b=i<12?'':'<span class="bg2">NEW</span>';const s=a?`animation-delay:${i*28}ms`:'';return`<div class="cc${a?' a':''}" style="${s}"><div class="ci"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${b}<div class="cb"><h3>${c.n}</h3><p>${c.d}</p></div></div>`}).join('');document.querySelectorAll('.cc').forEach(c=>{c.onmousemove=e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')}})}
-function tog(){sh=!sh;document.getElementById('sB').textContent=sh?'Свернуть':'Показать все (59)';ren(sh?D:D.slice(0,12),true)}
+function ren(l,a){
+  document.getElementById('grid').innerHTML=l.map((c,i)=>{
+    const b=i<12?'':'<span class="bg2">NEW</span>';
+    const s=a?`animation-delay:${i*28}ms`:'';
+    return `<div class="cc${a?' a':''}" style="${s}"><div class="ci"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${b}<div class="cb"><h3>${c.n}</h3><p>${c.d}</p></div></div>`;
+  }).join('');
+  document.querySelectorAll('.cc').forEach(c=>{
+    c.onmousemove=e=>{
+      const r=c.getBoundingClientRect();
+      c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    };
+  });
+}
+function tog(){
+  sh=!sh;
+  document.getElementById('sB').textContent=sh?'Свернуть':'Показать все (59)';
+  ren(sh?D:D.slice(0,12),true);
+}
 ren(D.slice(0,12));
 
 let dn=false;
-function cl(){if(dn)return;dn=true;const i=document.getElementById('intro');if(i){i.classList.add('out');setTimeout(()=>i.remove(),600)}document.body.style.overflow='';scrollTo(0,0)}
-document.getElementById('intro').addEventListener('click',cl);
-setTimeout(cl,3500);
+function closeIntro(){
+  if(dn)return;
+  dn=true;
+  const i=document.getElementById('intro');
+  if(i){i.classList.add('out');setTimeout(()=>i.remove(),600)}
+  document.body.style.overflow='';
+  scrollTo(0,0);
+}
+document.getElementById('intro').addEventListener('click',closeIntro);
+setTimeout(closeIntro,3500);
 document.body.style.overflow='hidden';
 scrollTo(0,0);
 
-const pc=document.getElementById('pct');let c=0;const ci=setInterval(()=>{c+=Math.floor(Math.random()*8)+1;if(c>=100){c=100;clearInterval(ci)}pc.textContent=c+'%'},40);
+const pc=document.getElementById('pct');
+let c=0;
+const ci=setInterval(()=>{
+  c+=Math.floor(Math.random()*8)+1;
+  if(c>=100){c=100;clearInterval(ci)}
+  pc.textContent=c+'%';
+},40);
 
-addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('on',scrollY>320));
+addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('on',scrollY>320);
+});
 
-const o=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('v');o.unobserve(x.target)}}),{threshold:.08});
+const o=new IntersectionObserver(e=>e.forEach(x=>{
+  if(x.isIntersecting){x.target.classList.add('v');o.unobserve(x.target)}
+}),{threshold:.08});
 document.querySelectorAll('.rv').forEach(el=>o.observe(el));
-const t=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('v');t.unobserve(x.target)}}),{threshold:.15});
-document.querySelectorAll('.tl-i').forEach(el=>t.observe(el));
 
-const U='https://github.com/migodi2/migoralauncher/releases/download/v1.0/MigoraLauncherSetup.exe';
-document.getElementById('dl').onclick=e=>{e.preventDefault();location.href=U};
-document.getElementById('dl3').onclick=e=>{e.preventDefault();location.href=U};
-document.getElementById('nDl').onclick=e=>{e.preventDefault();location.href=U};
+const t=new IntersectionObserver(e=>e.forEach(x=>{
+  if(x.isIntersecting){x.target.classList.add('v');t.unobserve(x.target)}
+}),{threshold:.15});
+document.querySelectorAll('.tl-i').forEach(el=>t.observe(el));
 </script>
 </body>
 </html>
