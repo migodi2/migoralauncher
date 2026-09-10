@@ -8,404 +8,382 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#000;--card:#080808;--border:rgba(255,255,255,.06);--white:#fff;--gray:#888;--dim:#444;--ease:cubic-bezier(.16,1,.3,1)}
+:root{--bg:#000;--c:#0a0a0a;--bd:rgba(255,255,255,.05);--bd2:rgba(255,255,255,.08);--w:#fff;--g:#888;--d:#444;--e:cubic-bezier(.16,1,.3,1)}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:#fff;border-radius:4px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--w);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:#fff}
 a{color:inherit;text-decoration:none}
 
-/* INTRO */
-#intro{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity 1s var(--ease),visibility 1s}
-#intro.done{opacity:0;visibility:hidden;pointer-events:none}
-.intro-matrix{position:absolute;inset:0;overflow:hidden;opacity:.04}
-.intro-matrix canvas{width:100%;height:100%}
-.intro-center{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:28px}
-.intro-m{font-size:120px;font-weight:900;line-height:1;letter-spacing:-8px;opacity:0;transform:translateY(40px) scale(.9);animation:iM 1.5s .3s var(--ease) forwards}
-@keyframes iM{0%{opacity:0;transform:translateY(40px) scale(.9)}100%{opacity:1;transform:translateY(0) scale(1)}}
-.intro-m span{display:inline-block;animation:iLetter .6s calc(.3s + var(--i) * .08s) var(--ease) both}
-@keyframes iLetter{0%{opacity:0;transform:translateY(30px) rotateX(40deg)}100%{opacity:1;transform:translateY(0) rotateX(0)}}
-.intro-sub{font-size:15px;color:var(--dim);letter-spacing:8px;text-transform:uppercase;opacity:0;animation:iSub 1s 1.2s var(--ease) forwards}
-@keyframes iSub{0%{opacity:0;letter-spacing:20px}100%{opacity:.5;letter-spacing:8px}}
-.intro-bar{width:0;height:1px;background:#fff;animation:iBar 2.5s 1.5s var(--ease) forwards}
-@keyframes iBar{0%{width:0}100%{width:200px}}
-.intro-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:4px;opacity:0;animation:iSub 1s 1.8s var(--ease) forwards}
-.intro-hint{position:absolute;bottom:40px;font-size:11px;color:var(--dim);letter-spacing:3px;opacity:0;animation:iSub 1s 3s var(--ease) forwards}
+/* ===== INTRO ===== */
+#intro{position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .8s var(--e),visibility .8s}
+#intro.out{opacity:0;visibility:hidden;pointer-events:none}
+.i-wrap{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:24px}
+.i-lets{display:flex;gap:4px;font-size:100px;font-weight:900;letter-spacing:-6px}
+.i-lets span{display:inline-block;opacity:0;transform:translateY(40px) rotateX(60deg);animation:iL .7s calc(.2s + var(--i)*.07s) var(--e) forwards}
+@keyframes iL{to{opacity:1;transform:translateY(0) rotateX(0)}}
+.i-bar{width:0;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:iB 2s 1s var(--e) forwards}
+@keyframes iB{to{width:180px}}
+.i-sub{font-size:11px;color:var(--d);letter-spacing:8px;text-transform:uppercase;opacity:0;animation:iF 1s 1.4s var(--e) forwards}
+@keyframes iF{to{opacity:.4}}
+.i-pct{position:absolute;bottom:80px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--d);letter-spacing:3px;opacity:0;animation:iF 1s 1.6s var(--e) forwards}
+.i-click{position:absolute;bottom:48px;font-size:10px;color:var(--d);letter-spacing:2px;opacity:0;animation:iF 1s 2.8s var(--e) forwards}
 
-/* BG */
-.grid{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 70% 50% at 50% 50%,black,transparent)}
+/* ===== BG ===== */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.008) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.008) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 60% 40% at 50% 50%,black,transparent)}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:999;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.6);backdrop-filter:blur(40px);border-bottom:1px solid var(--border);transform:translateY(-100%);opacity:0;transition:all .5s var(--ease)}
-nav.show{transform:translateY(0);opacity:1}
-nav .logo{display:flex;align-items:center;gap:10px}
-nav .logo img{width:28px;height:28px;border-radius:8px}
-nav .logo span{font-weight:700;font-size:14px;letter-spacing:2px}
-nav .links{display:flex;gap:28px;align-items:center}
-nav .links a{font-size:12px;color:var(--gray);font-weight:500;letter-spacing:.5px;transition:color .3s}
-nav .links a:hover{color:#fff}
-nav .dl{padding:7px 18px;border-radius:8px;background:#fff;color:#000;font-size:12px;font-weight:600;transition:all .3s var(--ease)}
-nav .dl:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(255,255,255,.1)}
+/* ===== NAV ===== */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:999;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(0,0,0,.5);backdrop-filter:blur(30px);border-bottom:1px solid var(--bd);transform:translateY(-100%);opacity:0;transition:all .5s var(--e)}
+.topnav.on{transform:translateY(0);opacity:1}
+.topnav .br{display:flex;align-items:center;gap:10px}
+.topnav .br img{width:26px;height:26px;border-radius:7px}
+.topnav .br b{font-size:13px;letter-spacing:2px}
+.topnav .ln{display:flex;gap:24px;align-items:center}
+.topnav .ln a{font-size:12px;color:var(--g);font-weight:500;transition:color .3s}
+.topnav .ln a:hover{color:#fff}
+.topnav .bt{padding:6px 16px;border-radius:7px;background:#fff;color:#000;font-size:12px;font-weight:600;transition:all .3s var(--e)}
+.topnav .bt:hover{transform:scale(1.04)}
 
-/* HERO */
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 48px 80px;overflow:hidden}
-.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(200px);opacity:.025;background:#fff;top:50%;left:50%;transform:translate(-50%,-50%)}
-.hero-content{position:relative;z-index:2;text-align:center;max-width:900px}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;border:1px solid var(--border);font-size:12px;color:var(--gray);margin-bottom:48px;opacity:0;transform:translateY(20px)}
-.hero-badge .live{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.hero h1{font-size:clamp(72px,13vw,180px);font-weight:900;line-height:.78;letter-spacing:-8px;margin-bottom:32px;opacity:0;transform:translateY(40px)}
-.hero .desc{font-size:16px;color:var(--gray);max-width:400px;margin:0 auto 56px;line-height:1.8;opacity:0;transform:translateY(20px)}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:12px;font-size:13px;font-weight:600;transition:all .4s var(--ease);cursor:pointer;border:none;position:relative;overflow:hidden}
-.btn-w{background:#fff;color:#000}
-.btn-w:hover{transform:translateY(-3px);box-shadow:0 8px 40px rgba(255,255,255,.12)}
-.btn-w::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.06),transparent);transform:translateX(-100%);transition:transform .5s}
-.btn-w:hover::after{transform:translateX(100%)}
-.btn-o{background:transparent;color:#fff;border:1px solid var(--border)}
-.btn-o:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);transform:translateY(-2px)}
-.btn svg{width:16px;height:16px}
-.stats{display:flex;gap:64px;justify-content:center;margin-top:80px;opacity:0;transform:translateY(20px)}
-.stat .val{font-size:28px;font-weight:900;letter-spacing:-1px}
-.stat .lbl{font-size:9px;color:var(--dim);margin-top:8px;letter-spacing:4px;text-transform:uppercase}
+/* ===== HERO ===== */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 40px 60px;overflow:hidden}
+.hero-g{position:absolute;width:500px;height:500px;border-radius:50%;filter:blur(250px);opacity:.02;background:#fff;top:50%;left:50%;transform:translate(-50%,-50%)}
+.hero-c{position:relative;z-index:2;text-align:center;max-width:860px}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;border:1px solid var(--bd);font-size:11px;color:var(--g);margin-bottom:40px;opacity:0;transform:translateY(16px)}
+.hero-tag .dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:bl 2s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.15}}
+.hero h1{font-size:clamp(80px,14vw,200px);font-weight:900;line-height:.75;letter-spacing:-10px;margin-bottom:28px;opacity:0;transform:translateY(32px)}
+.hero .d{font-size:15px;color:var(--g);max-width:380px;margin:0 auto 48px;line-height:1.8;opacity:0;transform:translateY(16px)}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(16px)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;font-size:13px;font-weight:600;transition:all .35s var(--e);cursor:pointer;border:none}
+.bw{background:#fff;color:#000}.bw:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(255,255,255,.1)}
+.bo{background:transparent;color:#fff;border:1px solid var(--bd)}.bo:hover{background:rgba(255,255,255,.04);border-color:var(--bd2)}
+.btn svg{width:15px;height:15px}
+.st{display:flex;gap:56px;justify-content:center;margin-top:72px;opacity:0;transform:translateY(16px)}
+.st .v{font-size:26px;font-weight:900;letter-spacing:-1px}
+.st .l{font-size:9px;color:var(--d);margin-top:6px;letter-spacing:4px;text-transform:uppercase}
 
-/* DIVIDER */
-hr.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);margin:0 48px}
+/* ===== DIVIDER ===== */
+.sep{border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);margin:0 40px}
 
-/* PREVIEW */
-.preview{padding:40px 48px 140px;max-width:1100px;margin:0 auto;position:relative}
-.preview-glow{position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:80%;height:80%;background:radial-gradient(ellipse,rgba(255,255,255,.02),transparent);pointer-events:none}
-.preview-box{border-radius:16px;border:1px solid var(--border);overflow:hidden;background:var(--card);box-shadow:0 80px 240px rgba(0,0,0,.6);position:relative;opacity:0;transform:translateY(50px)}
-.preview-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(255,255,255,.015);border-bottom:1px solid var(--border)}
-.preview-dot{width:10px;height:10px;border-radius:50%;opacity:.35}
-.preview-dot.r{background:#ff5f57}.preview-dot.y{background:#febc2e}.preview-dot.g{background:#28c840}
-.preview-url{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
-.preview-body{aspect-ratio:16/9;overflow:hidden}
-.preview-body img{width:100%;height:100%;object-fit:cover;opacity:.85}
+/* ===== PREVIEW ===== */
+.prev{padding:32px 40px 120px;max-width:1060px;margin:0 auto;position:relative}
+.prev-g{position:absolute;top:-25%;left:50%;transform:translateX(-50%);width:70%;height:70%;background:radial-gradient(ellipse,rgba(255,255,255,.015),transparent);pointer-events:none}
+.prev-f{border-radius:14px;border:1px solid var(--bd);overflow:hidden;background:var(--c);box-shadow:0 60px 200px rgba(0,0,0,.5);opacity:0;transform:translateY(40px)}
+.prev-bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:rgba(255,255,255,.015);border-bottom:1px solid var(--bd)}
+.prev-d{width:9px;height:9px;border-radius:50%;opacity:.3}.prev-d.r{background:#ff5f57}.prev-d.y{background:#febc2e}.prev-d.g{background:#28c840}
+.prev-u{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--d)}
+.prev-body{aspect-ratio:16/9;overflow:hidden}
+.prev-body img{width:100%;height:100%;object-fit:cover;opacity:.8}
 
-/* SECTION */
-section{padding:120px 48px;max-width:1200px;margin:0 auto}
-.sec-head{text-align:center;margin-bottom:72px}
-.sec-tag{display:inline-block;padding:4px 14px;border-radius:100px;border:1px solid var(--border);font-size:10px;font-weight:600;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
-.sec-head h2{font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-2px;margin-bottom:12px}
-.sec-head p{font-size:14px;color:var(--gray);max-width:400px;margin:0 auto;line-height:1.7}
+/* ===== SECTION ===== */
+.sec{padding:100px 40px;max-width:1100px;margin:0 auto}
+.sec-h{text-align:center;margin-bottom:64px}
+.sec-t{display:inline-block;padding:4px 12px;border-radius:100px;border:1px solid var(--bd);font-size:10px;font-weight:600;color:var(--d);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.sec-h h2{font-size:clamp(26px,3.5vw,44px);font-weight:900;letter-spacing:-2px;margin-bottom:10px}
+.sec-h p{font-size:13px;color:var(--g);max-width:360px;margin:0 auto;line-height:1.7}
 
-/* CLIENTS */
-.clients{display:grid;grid-template-columns:repeat(4,1fr);gap:1px}
-.cc{background:var(--card);border:1px solid var(--border);transition:all .4s var(--ease);cursor:pointer;position:relative;overflow:hidden}
-.cc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--x,50%) var(--y,50%),rgba(255,255,255,.03),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none}
-.cc:hover{border-color:rgba(255,255,255,.08);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+/* ===== CLIENTS ===== */
+.cl{display:grid;grid-template-columns:repeat(4,1fr);gap:1px}
+.cc{background:var(--c);border:1px solid var(--bd);transition:all .4s var(--e);cursor:pointer;position:relative;overflow:hidden}
+.cc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.03),transparent 55%);opacity:0;transition:opacity .4s;pointer-events:none}
+.cc:hover{border-color:var(--bd2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
 .cc:hover::after{opacity:1}
-.cc-img{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative}
-.cc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);opacity:.8;filter:grayscale(.2)}
-.cc:hover .cc-img img{transform:scale(1.06);opacity:1;filter:grayscale(0)}
-.cc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 50%);pointer-events:none}
-.cc-body{padding:16px 20px 20px}
-.cc-body h3{font-size:14px;font-weight:700;margin-bottom:4px}
-.cc-body p{font-size:11px;color:var(--dim);line-height:1.5}
-.cc .badge{position:absolute;top:12px;right:12px;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:1px;z-index:2;backdrop-filter:blur(8px);background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.1)}
-.show-wrap{text-align:center;margin-top:40px}
+.ci{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative}
+.ci img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--e);opacity:.75;filter:grayscale(.15)}
+.cc:hover .ci img{transform:scale(1.05);opacity:1;filter:grayscale(0)}
+.ci::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5),transparent 50%);pointer-events:none}
+.cb{padding:14px 18px 18px}
+.cb h3{font-size:13px;font-weight:700;margin-bottom:3px}
+.cb p{font-size:11px;color:var(--d);line-height:1.4}
+.cb .s{margin-top:8px;font-size:11px}
+.cb .s span{color:var(--d)}
+.cc .bg2{position:absolute;top:10px;right:10px;padding:3px 9px;border-radius:100px;font-size:8px;font-weight:700;letter-spacing:1px;z-index:2;backdrop-filter:blur(6px);background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.08)}
+.s-wrap{text-align:center;margin-top:36px}
 
-@keyframes cardUp{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:translateY(0)}}
-.cc.anim{animation:cardUp .45s var(--ease) both}
+@keyframes cUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+.cc.a{animation:cUp .4s var(--e) both}
 
-/* BENTO */
-.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:1px}
-.bc{background:var(--card);padding:44px;border:1px solid var(--border);position:relative;overflow:hidden;transition:all .4s var(--ease)}
-.bc:hover{border-color:rgba(255,255,255,.06);transform:translateY(-2px)}
-.bc .ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;background:rgba(255,255,255,.03);border:1px solid var(--border)}
-.bc .ico svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8}
-.bc .idx{font-size:64px;font-weight:900;letter-spacing:-4px;color:rgba(255,255,255,.02);position:absolute;top:12px;right:20px;line-height:1}
-.bc h3{font-size:16px;font-weight:700;margin-bottom:8px}
-.bc p{font-size:12px;color:var(--gray);line-height:1.7;max-width:300px}
+/* ===== BENTO ===== */
+.ben{display:grid;grid-template-columns:repeat(3,1fr);gap:1px}
+.bc{background:var(--c);padding:40px;border:1px solid var(--bd);position:relative;overflow:hidden;transition:all .4s var(--e)}
+.bc:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.bc .ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:rgba(255,255,255,.03);border:1px solid var(--bd)}
+.bc .ic svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8}
+.bc .ix{font-size:56px;font-weight:900;letter-spacing:-3px;color:rgba(255,255,255,.02);position:absolute;top:10px;right:16px;line-height:1}
+.bc h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.bc p{font-size:12px;color:var(--g);line-height:1.7;max-width:280px}
 .bc.w2{grid-column:span 2}
 
-/* MARQUEE */
-.marquee{overflow:hidden;padding:36px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative}
-.marquee::before,.marquee::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2}
-.marquee::before{left:0;background:linear-gradient(90deg,#000,transparent)}
-.marquee::after{right:0;background:linear-gradient(-90deg,#000,transparent)}
-.marquee-inner{display:flex;gap:56px;animation:scroll 35s linear infinite;width:max-content}
-.marquee-inner span{font-size:12px;font-weight:700;color:var(--dim);letter-spacing:5px;text-transform:uppercase;white-space:nowrap}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* ===== MARQUEE ===== */
+.mrq{overflow:hidden;padding:32px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);position:relative}
+.mrq::before,.mrq::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2}
+.mrq::before{left:0;background:linear-gradient(90deg,#000,transparent)}
+.mrq::after{right:0;background:linear-gradient(-90deg,#000,transparent)}
+.mrq-in{display:flex;gap:48px;animation:sc 30s linear infinite;width:max-content}
+.mrq-in span{font-size:11px;font-weight:700;color:var(--d);letter-spacing:5px;text-transform:uppercase;white-space:nowrap}
+@keyframes sc{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* TIMELINE */
-.tl{max-width:600px;margin:0 auto;position:relative;padding-left:44px}
-.tl::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,rgba(255,255,255,.12),transparent)}
-.tl-i{padding:0 0 48px;position:relative;opacity:0;transform:translateX(-16px);transition:all .5s var(--ease)}
-.tl-i.vis{opacity:1;transform:translateX(0)}
+/* ===== TIMELINE ===== */
+.tl{max-width:520px;margin:0 auto;position:relative;padding-left:40px}
+.tl::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,rgba(255,255,255,.1),transparent)}
+.tl-i{padding:0 0 44px;position:relative;opacity:0;transform:translateX(-12px);transition:all .5s var(--e)}
+.tl-i.v{opacity:1;transform:translateX(0)}
 .tl-i:last-child{padding-bottom:0}
-.tl-dot{position:absolute;left:-38px;top:4px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.25)}
-.tl-n{position:absolute;left:-68px;top:2px;font-size:10px;font-weight:700;color:var(--dim);font-family:'JetBrains Mono',monospace}
-.tl-i h3{font-size:15px;font-weight:700;margin-bottom:6px}
-.tl-i p{font-size:13px;color:var(--gray);line-height:1.7}
+.tl-dot{position:absolute;left:-35px;top:4px;width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.2)}
+.tl-n{position:absolute;left:-60px;top:2px;font-size:9px;font-weight:700;color:var(--d);font-family:'JetBrains Mono',monospace}
+.tl-i h3{font-size:14px;font-weight:700;margin-bottom:5px}
+.tl-i p{font-size:12px;color:var(--g);line-height:1.7}
 
-/* CTA */
-.cta{text-align:center;padding:160px 48px;position:relative;overflow:hidden}
-.cta-glow{position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);width:500px;height:250px;background:radial-gradient(ellipse,rgba(255,255,255,.03),transparent);filter:blur(60px)}
-.cta h2{font-size:clamp(40px,8vw,88px);font-weight:900;letter-spacing:-4px;margin-bottom:16px;position:relative}
-.cta p{font-size:15px;color:var(--gray);margin-bottom:40px;position:relative}
+/* ===== CTA ===== */
+.cta{text-align:center;padding:140px 40px;position:relative;overflow:hidden}
+.cta-g{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(255,255,255,.025),transparent);filter:blur(50px)}
+.cta h2{font-size:clamp(36px,7vw,80px);font-weight:900;letter-spacing:-4px;margin-bottom:14px;position:relative}
+.cta p{font-size:14px;color:var(--g);margin-bottom:36px;position:relative}
 
-/* FOOTER */
-footer{padding:28px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-footer .l{display:flex;align-items:center;gap:10px}
-footer img{width:24px;height:24px;border-radius:6px}
-footer span{font-weight:700;font-size:12px;letter-spacing:2px}
-footer .r{display:flex;gap:24px}
-footer .r a{font-size:12px;color:var(--dim);transition:color .3s}
-footer .r a:hover{color:#fff}
+/* ===== FOOTER ===== */
+footer{padding:24px 40px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ft-l{display:flex;align-items:center;gap:10px}
+footer img{width:22px;height:22px;border-radius:6px}
+ft-l b{font-size:12px;letter-spacing:2px}
+.ft-r{display:flex;gap:20px}
+.ft-r a{font-size:11px;color:var(--d);transition:color .3s}
+.ft-r a:hover{color:#fff}
 
-/* DOCK */
-.dock{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:3px;padding:6px 12px;background:rgba(0,0,0,.8);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(40px);box-shadow:0 16px 64px rgba(0,0,0,.7)}
-.dock a{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;transition:all .35s var(--ease);position:relative}
-.dock a:hover{background:rgba(255,255,255,.07);transform:translateY(-8px) scale(1.12)}
-.dock a svg{width:17px;height:17px;stroke:var(--gray);fill:none;stroke-width:1.8;transition:stroke .3s}
+/* ===== DOCK ===== */
+.dock{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:2px;padding:5px 10px;background:rgba(0,0,0,.75);border:1px solid var(--bd);border-radius:18px;backdrop-filter:blur(30px);box-shadow:0 12px 48px rgba(0,0,0,.6)}
+.dock a{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;transition:all .3s var(--e);position:relative}
+.dock a:hover{background:rgba(255,255,255,.06);transform:translateY(-6px) scale(1.1)}
+.dock a svg{width:16px;height:16px;stroke:var(--g);fill:none;stroke-width:1.8;transition:stroke .3s}
 .dock a:hover svg{stroke:#fff}
-.dock .tip{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(0,0,0,.9);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:all .3s var(--ease)}
-.dock a:hover .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.dock .tp{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(4px);background:rgba(0,0,0,.9);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:500;white-space:nowrap;opacity:0;pointer-events:none;transition:all .3s var(--e)}
+.dock a:hover .tp{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* REVEAL */
-.rv{opacity:0;transform:translateY(32px);transition:all .7s var(--ease)}
-.rv.vis{opacity:1;transform:translateY(0)}
-.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}
+/* ===== REVEAL ===== */
+.rv{opacity:0;transform:translateY(24px);transition:all .6s var(--e)}
+.rv.v{opacity:1;transform:translateY(0)}
+.rv1{transition-delay:.08s}.rv2{transition-delay:.16s}.rv3{transition-delay:.24s}
 
-@media(max-width:1024px){.clients{grid-template-columns:repeat(2,1fr)}.bento{grid-template-columns:1fr 1fr}.bc.w2{grid-column:span 2}}
-@media(max-width:768px){.hero{padding:100px 20px 60px}.hero h1{letter-spacing:-3px}.stats{gap:28px;flex-wrap:wrap}section{padding:80px 20px}.clients{grid-template-columns:1fr}.bento{grid-template-columns:1fr}.bc.w2{grid-column:span 1}.cta{padding:100px 20px}nav .links{display:none}.dock{bottom:12px;padding:4px 8px}.dock a{width:34px;height:34px}footer{flex-direction:column;gap:16px;text-align:center}}
+@media(max-width:1024px){.cl{grid-template-columns:repeat(2,1fr)}.ben{grid-template-columns:1fr 1fr}.bc.w2{grid-column:span 2}}
+@media(max-width:768px){.hero{padding:80px 20px 40px}.hero h1{letter-spacing:-3px}.st{gap:24px;flex-wrap:wrap}.sec{padding:60px 20px}.cl{grid-template-columns:1fr}.ben{grid-template-columns:1fr}.bc.w2{grid-column:span 1}.cta{padding:80px 20px}.topnav .ln{display:none}.dock{bottom:10px;padding:3px 6px}.dock a{width:32px;height:32px}footer{flex-direction:column;gap:12px;text-align:center}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 
 <div id="intro">
-  <div class="intro-matrix"><canvas id="mCanvas"></canvas></div>
-  <div class="intro-center">
-    <div class="intro-m"><span style="--i:0">M</span><span style="--i:1">I</span><span style="--i:2">G</span><span style="--i:3">O</span><span style="--i:4">R</span><span style="--i:5">A</span></div>
-    <div class="intro-bar"></div>
-    <div class="intro-sub">LAUNCHER</div>
-    <div class="intro-pct" id="pct">0%</div>
+  <div class="i-wrap">
+    <div class="i-lets">
+      <span style="--i:0">M</span><span style="--i:1">I</span><span style="--i:2">G</span><span style="--i:3">O</span><span style="--i:4">R</span><span style="--i:5">A</span>
+    </div>
+    <div class="i-bar"></div>
+    <div class="i-sub">LAUNCHER</div>
   </div>
-  <div class="intro-hint">нажми куда угодно</div>
+  <div class="i-pct" id="pct">0%</div>
+  <div class="i-click">нажми куда угодно</div>
 </div>
 
-<div class="grid"></div>
+<div class="bg"></div>
 
-<nav id="nav">
-  <div class="logo"><img src="icon.jpg" alt=""><span>MIGORA</span></div>
-  <div class="links">
+<nav class="topnav" id="nav">
+  <div class="br"><img src="icon.jpg" alt=""><b>MIGORA</b></div>
+  <div class="ln">
     <a href="#hero">Главная</a>
     <a href="#clients">Клиенты</a>
     <a href="#feat">Возможности</a>
-    <a href="#install">Установка</a>
+    <a href="#how">Установка</a>
   </div>
-  <a href="#" class="dl" id="navDl">Скачать</a>
+  <a href="#" class="bt" id="nDl">Скачать</a>
 </nav>
 
 <section class="hero" id="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-content">
-    <div class="hero-badge rv"><span class="live"></span>Релиз v0.3.5</div>
-    <h1 class="rv rv-d1">MIGORA<br>LAUNCHER</h1>
-    <p class="desc rv rv-d2">55+ Minecraft клиентов. Встроенная Java. Автоматическая загрузка ассетов.</p>
-    <div class="hero-btns rv rv-d3">
-      <a href="#" class="btn btn-w" id="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать бесплатно</a>
-      <a href="https://t.me/migodihvh" target="_blank" class="btn btn-o">Telegram</a>
+  <div class="hero-g"></div>
+  <div class="hero-c">
+    <div class="hero-tag rv"><span class="dot"></span>Релиз v0.3.5</div>
+    <h1 class="rv rv1">MIGORA<br>LAUNCHER</h1>
+    <p class="d rv rv2">55+ Minecraft клиентов. Встроенная Java. Автоматическая загрузка ассетов.</p>
+    <div class="hero-btns rv rv3">
+      <a href="#" class="btn bw" id="dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать</a>
+      <a href="https://t.me/migodihvh" target="_blank" class="btn bo">Telegram</a>
     </div>
-    <div class="stats rv rv-d3">
-      <div class="stat"><div class="val">55+</div><div class="lbl">Клиентов</div></div>
-      <div class="stat"><div class="val">0</div><div class="lbl">Рекламы</div></div>
-      <div class="stat"><div class="val">100%</div><div class="lbl">Бесплатно</div></div>
+    <div class="st rv rv3">
+      <div><div class="v">55+</div><div class="l">Клиентов</div></div>
+      <div><div class="v">0</div><div class="l">Рекламы</div></div>
+      <div><div class="v">100%</div><div class="l">Бесплатно</div></div>
     </div>
   </div>
 </section>
 
 <hr class="sep">
 
-<div class="preview">
-  <div class="preview-glow"></div>
-  <div class="preview-box rv">
-    <div class="preview-bar"><div class="preview-dot r"></div><div class="preview-dot y"></div><div class="preview-dot g"></div><span class="preview-url">migora://launcher</span></div>
-    <div class="preview-body"><img src="preview.png" alt=""></div>
+<div class="prev">
+  <div class="prev-g"></div>
+  <div class="prev-f rv">
+    <div class="prev-bar"><div class="prev-d r"></div><div class="prev-d y"></div><div class="prev-d g"></div><span class="prev-u">migora://launcher</span></div>
+    <div class="prev-body"><img src="preview.png" alt=""></div>
   </div>
 </div>
 
 <hr class="sep">
 
-<section id="clients">
-  <div class="sec-head rv">
-    <div class="sec-tag">Клиенты</div>
+<section class="sec" id="clients">
+  <div class="sec-h rv">
+    <div class="sec-t">Клиенты</div>
     <h2>55+ клиентов</h2>
-    <p>Все популярные Minecraft клиенты в одном месте</p>
+    <p>Все популярные Minecraft клиенты</p>
   </div>
-  <div class="clients" id="grid"></div>
-  <div class="show-wrap"><button onclick="toggle()" class="btn btn-o" id="showBtn">Показать все (59)</button></div>
+  <div class="cl" id="grid"></div>
+  <div class="s-wrap"><button onclick="tog()" class="btn bo" id="sBtn">Показать все (59)</button></div>
 </section>
 
-<section id="feat">
-  <div class="sec-head rv">
-    <div class="sec-tag">Релиз</div>
+<section class="sec" id="feat">
+  <div class="sec-h rv">
+    <div class="sec-t">Релиз</div>
     <h2>Migora Launcher v0.3.5</h2>
-    <p>Полноценный лаунчер для Minecraft</p>
+    <p>Полноценный лаунчер</p>
   </div>
-  <div class="bento">
-    <div class="bc rv"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="idx">01</div><h3>55+ клиентов</h3><p>Все популярные моды из коробки</p></div>
-    <div class="bc rv rv-d1"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="idx">02</div><h3>Встроенная Java</h3><p>Не нужно устанавливать отдельно</p></div>
-    <div class="bc rv rv-d2"><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 3 21 9 15 9"/></svg></div><div class="idx">03</div><h3>Автообновление</h3><p>Лента всегда свежая</p></div>
-    <div class="bc rv"><div class="ico"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="idx">04</div><h3>Discord RPC</h3><p>Покажи друзьям во что играешь</p></div>
-    <div class="bc rv rv-d1"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="idx">05</div><h3>Кэширование</h3><p>Мгновенное открытие</p></div>
-    <div class="bc w2 rv rv-d2"><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><div class="idx">06</div><h3>Установщик</h3><p>~107 МБ. Выбор директории, ярлыки, русский язык. Без прав администратора.</p></div>
+  <div class="ben">
+    <div class="bc rv"><div class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="ix">01</div><h3>55+ клиентов</h3><p>Все популярные моды из коробки</p></div>
+    <div class="bc rv rv1"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="ix">02</div><h3>Встроенная Java</h3><p>Не нужно устанавливать отдельно</p></div>
+    <div class="bc rv rv2"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 3 21 9 15 9"/></svg></div><div class="ix">03</div><h3>Автообновление</h3><p>Лента всегда свежая</p></div>
+    <div class="bc rv"><div class="ic"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="ix">04</div><h3>Discord RPC</h3><p>Покажи друзьям во что играешь</p></div>
+    <div class="bc rv rv1"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="ix">05</div><h3>Кэширование</h3><p>Мгновенное открытие</p></div>
+    <div class="bc w2 rv rv2"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><div class="ix">06</div><h3>Установщик</h3><p>~107 МБ. Выбор директории, ярлыки, русский. Без прав администратора.</p></div>
   </div>
 </section>
 
-<div class="marquee">
-  <div class="marquee-inner">
+<div class="mrq">
+  <div class="mrq-in">
     <span>OneConfig</span><span>RusherHack</span><span>Meteor</span><span>Wurst</span><span>SalHack</span><span>Inertia</span><span>Ariser</span><span>Luna</span><span>Phantom</span><span>Impact</span><span>Azura</span><span>Vape</span>
     <span>OneConfig</span><span>RusherHack</span><span>Meteor</span><span>Wurst</span><span>SalHack</span><span>Inertia</span><span>Ariser</span><span>Luna</span><span>Phantom</span><span>Impact</span><span>Azura</span><span>Vape</span>
   </div>
 </div>
 
-<section id="install">
-  <div class="sec-head rv">
-    <div class="sec-tag">Установка</div>
+<section class="sec" id="how">
+  <div class="sec-h rv">
+    <div class="sec-t">Установка</div>
     <h2>Простая установка</h2>
     <p>Без прав администратора</p>
   </div>
   <div class="tl">
-    <div class="tl-i"><div class="tl-n">01</div><div class="tl-dot"></div><h3>Скачай установщик</h3><p>~107 МБ. Быстрая загрузка.</p></div>
-    <div class="tl-i"><div class="tl-n">02</div><div class="tl-dot"></div><h3>Запусти установку</h3><p>Выбери директорию. Ярлыки автоматически.</p></div>
-    <div class="tl-i"><div class="tl-n">03</div><div class="tl-dot"></div><h3>Играй</h3><p>55+ клиентов доступны сразу.</p></div>
+    <div class="tl-i"><div class="tl-n">01</div><div class="tl-dot"></div><h3>Скачай</h3><p>~107 МБ</p></div>
+    <div class="tl-i"><div class="tl-n">02</div><div class="tl-dot"></div><h3>Запусти</h3><p>Выбери директорию</p></div>
+    <div class="tl-i"><div class="tl-n">03</div><div class="tl-dot"></div><h3>Играй</h3><p>55+ клиентов сразу</p></div>
   </div>
 </section>
 
 <section class="cta" id="dl2">
-  <div class="cta-glow"></div>
+  <div class="cta-g"></div>
   <h2 class="rv">Готов начать?</h2>
-  <p class="rv rv-d1">Скачай прямо сейчас</p>
-  <a href="#" class="btn btn-w rv rv-d2" id="dl3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать MigoraLauncher.exe</a>
+  <p class="rv rv1">Скачай прямо сейчас</p>
+  <a href="#" class="btn bw rv rv2" id="dl3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>MigoraLauncher.exe</a>
 </section>
 
 <footer>
-  <div class="l"><img src="icon.jpg" alt=""><span>MIGORA</span></div>
-  <div class="r"><a href="https://t.me/migodihvh" target="_blank">Telegram</a><a href="https://github.com/migodi2/migoralauncher" target="_blank">GitHub</a></div>
+  <div class="ft-l"><img src="icon.jpg" alt=""><b>MIGORA</b></div>
+  <div class="ft-r"><a href="https://t.me/migodihvh" target="_blank">Telegram</a><a href="https://github.com/migodi2/migoralauncher" target="_blank">GitHub</a></div>
 </footer>
 
 <nav class="dock">
-  <a href="#hero"><span class="tip">Главная</span><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
-  <a href="#clients"><span class="tip">Клиенты</span><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></a>
-  <a href="#feat"><span class="tip">Возможности</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
-  <a href="#dl2"><span class="tip">Скачать</span><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
-  <a href="https://t.me/migodihvh" target="_blank"><span class="tip">Telegram</span><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg></a>
+  <a href="#hero"><span class="tp">Главная</span><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+  <a href="#clients"><span class="tp">Клиенты</span><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></a>
+  <a href="#feat"><span class="tp">Возможности</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
+  <a href="#dl2"><span class="tp">Скачать</span><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+  <a href="https://t.me/migodihvh" target="_blank"><span class="tp">Telegram</span><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg></a>
 </nav>
 
 <script>
-const C=[
-{n:"Alek",d:"Minecraft 1.21.11",r:0,v:0,p:"coSwyYY-qMdhAA.jpg"},
-{n:"AlphaDLC",d:"Minecraft 1.21.4",r:0,v:0,p:"YG-TwVLYvDyZfg.jpg"},
-{n:"ApexDLC",d:"Minecraft 1.21.8",r:0,v:0,p:"apexdlc_8dc03cefc808.jpg"},
-{n:"AppleBuy",d:"Minecraft 1.21.11",r:0,v:0,p:"applebuy_f6ecb3fce407.jpg"},
-{n:"Arbuz",d:"Minecraft 1.21.4",r:0,v:0,p:"arbuz_9d8021b4360c.jpg"},
-{n:"BladeReload",d:"Minecraft 26.2",r:0,v:0,p:"8riAjITZyts1lw.jpg"},
-{n:"Buquad",d:"Minecraft 1.21.4",r:0,v:0,p:"buquad_1453fffefefe.jpg"},
-{n:"Catlavan",d:"Minecraft 1.16.5",r:0,v:0,p:"catlavan_deb17cb9b365.jpg"},
-{n:"CatLean",d:"Minecraft 1.21.11",r:0,v:0,p:"catlean_16c448191730.jpg"},
-{n:"Celestial",d:"Minecraft Beta 1.16.5",r:0,v:0,p:"XXQujy-Wgco5YA.jpg"},
-{n:"CodeDLC",d:"Minecraft 1.21.4",r:0,v:0,p:"w1m6bl6LLF39Dg.jpg"},
-{n:"Customix",d:"Minecraft 1.21.4",r:0,v:0,p:"customix_890cd3635636.jpg"},
-{n:"Delta",d:"Minecraft 1.21.4",r:0,v:0,p:"delta1214_42ec55f4c55c.jpg"},
-{n:"DeviceClient",d:"Minecraft 1.21.4",r:0,v:0,p:"deviceclient_7b78ff02877f.jpg"},
-{n:"Eclipse",d:"Minecraft 1.21.4",r:0,v:0,p:"eclipse_77a00fd10548.png"},
-{n:"Essence",d:"Minecraft 1.21.4",r:0,v:0,p:"V4J2D8diei7WlA.jpg"},
-{n:"ExosWare",d:"Minecraft 1.21.4",r:0,v:0,p:"tp_HjublwvzaNw.jpg"},
-{n:"Expensive",d:"Minecraft 1.21.4",r:0,v:0,p:"EjeKWeMpgVgvcg.jpg"},
-{n:"Exploit",d:"Minecraft 1.21.11",r:0,v:0,p:"Na0ozdzVX7QGmw.jpg"},
-{n:"Hydra",d:"Minecraft 1.21.4",r:0,v:0,p:"iAU1dyklhG1A0g.jpg"},
-{n:"Javelin",d:"Minecraft",r:0,v:0,p:"jf-UHs-0KOfUZA.jpg"},
-{n:"Liminar",d:"Minecraft 1.21.4",r:0,v:0,p:"liminar_70599d4e01a7.jpg"},
-{n:"MeowDLC",d:"Minecraft 1.21.4",r:0,v:0,p:"meowdlc_bfc86aa4bb04.jpg"},
-{n:"MercuryFree",d:"Minecraft 1.21.11",r:0,v:0,p:"ftuYbsI3eLn8OQ.jpg"},
-{n:"MerfoDLC",d:"Minecraft 1.21.4",r:0,v:0,p:"merfodlc_40106bab9e1a.jpg"},
-{n:"Minced",d:"Minecraft 1.21.4",r:0,v:0,p:"minced_cc10b656f22d.jpg"},
-{n:"Monoton",d:"Minecraft 1.16.5",r:0,v:0,p:"monoton_8dcf77a5f154.jpg"},
-{n:"Monoware",d:"Minecraft 1.21.4",r:0,v:0,p:"monoware_5e3cc1ebf023.jpg"},
-{n:"Moonward",d:"Minecraft 1.21.4",r:0,v:0,p:"moonward_f2e6dfa2e80b.jpg"},
-{n:"MountStar",d:"Minecraft 1.21.4",r:0,v:0,p:"ZJKgnuIW_qiBOw.jpg"},
-{n:"Mytheria",d:"Minecraft 1.21.4",r:0,v:0,p:"jR_vBbJNdp0U0A.jpg"},
-{n:"Neverlose",d:"Minecraft 1.21.11",r:0,v:0,p:"neverlose_d60ecd29f780.jpg"},
-{n:"NewCode",d:"Minecraft 1.21.4",r:0,v:0,p:"newcode_cc2f9123da8e.jpg"},
-{n:"Night DLC",d:"Minecraft 1.21.11",r:0,v:0,p:"nightdlc_8570d94eaf35.jpg"},
-{n:"Nightix",d:"Minecraft 1.21.11",r:0,v:0,p:"nightix_f813a3cecd3d.jpg"},
-{n:"Nuclear",d:"Minecraft 1.16.5",r:0,v:0,p:"nuclear_65fa3868e368.jpg"},
-{n:"Nursultan",d:"Minecraft 1.21.11",r:0,v:0,p:"HIR-SDRYvxaCSQ.jpg"},
-{n:"Phobia",d:"Minecraft 1.16.5",r:0,v:0,p:"6vFbxjgdPpyDhw.jpg"},
-{n:"Plague",d:"Minecraft 1.21.4",r:0,v:0,p:"zspnMgNi-V6arw.jpg"},
-{n:"Polaris",d:"Minecraft 1.21.11",r:0,v:0,p:"WVHEs85nJv-NPg.jpg"},
-{n:"Punch",d:"Minecraft 1.21.4",r:0,v:0,p:"QY8nBrycvFmygw.jpg"},
-{n:"Rich",d:"Minecraft 1.21.4",r:0,v:0,p:"s1RwQojwzifAmw.jpg"},
-{n:"Rockstar",d:"Minecraft 1.21.4",r:0,v:0,p:"rockstar_cbf62995c653.png"},
-{n:"Ryzen",d:"Minecraft 1.21.4",r:0,v:0,p:"ryzen_bd0b62f382c1.jpg"},
-{n:"Skuik",d:"Minecraft",r:0,v:0,p:"ag65Zdr7W8W4qg.jpg"},
-{n:"SkyCore",d:"Minecraft 1.21.4",r:0,v:0,p:"skycore_c65e0bf00c06.jpg"},
-{n:"SystemDLC",d:"Minecraft 1.21.4",r:0,v:0,p:"qxdaKD3qO8PqAg.jpg"},
-{n:"Velka",d:"Minecraft 1.21.4",r:0,v:0,p:"velka.png"},
-{n:"VenusFree",d:"Minecraft 1.16.5",r:0,v:0,p:"m4q-Se7pOMZNAA.jpg"},
-{n:"Vesence",d:"Minecraft 1.16.5",r:0,v:0,p:"jqkS22_Z_MzGGg.jpg"},
-{n:"Vibe",d:"Minecraft 1.16.5",r:0,v:0,p:"vibe_4440fd527f2f.jpg"},
-{n:"Volon",d:"Minecraft 1.21.4",r:0,v:0,p:"JCOjXBnzwCir1w.jpg"},
-{n:"Wexside",d:"Minecraft 1.16.5",r:0,v:0,p:"WthK9tgn7uG3bA.jpg"},
-{n:"Wild",d:"Minecraft 1.21.8",r:0,v:0,p:"GdumUzsLklgytg.jpg"},
-{n:"Winston",d:"Minecraft 1.16.5",r:0,v:0,p:"winston_c298f936c87e.jpg"},
-{n:"Wyvern",d:"Minecraft 1.21.4",r:0,v:0,p:"wyvern_49368fc2e854.jpg"},
-{n:"Zenith",d:"Minecraft 1.21.11",r:0,v:0,p:"zenith_d9270fd554fb.jpg"}
+const D=[
+{n:"Alek",d:"Minecraft 1.21.11",p:"coSwyYY-qMdhAA.jpg"},
+{n:"AlphaDLC",d:"Minecraft 1.21.4",p:"YG-TwVLYvDyZfg.jpg"},
+{n:"ApexDLC",d:"Minecraft 1.21.8",p:"apexdlc_8dc03cefc808.jpg"},
+{n:"AppleBuy",d:"Minecraft 1.21.11",p:"applebuy_f6ecb3fce407.jpg"},
+{n:"Arbuz",d:"Minecraft 1.21.4",p:"arbuz_9d8021b4360c.jpg"},
+{n:"BladeReload",d:"Minecraft 26.2",p:"8riAjITZyts1lw.jpg"},
+{n:"Buquad",d:"Minecraft 1.21.4",p:"buquad_1453fffefefe.jpg"},
+{n:"Catlavan",d:"Minecraft 1.16.5",p:"catlavan_deb17cb9b365.jpg"},
+{n:"CatLean",d:"Minecraft 1.21.11",p:"catlean_16c448191730.jpg"},
+{n:"Celestial",d:"Minecraft Beta 1.16.5",p:"XXQujy-Wgco5YA.jpg"},
+{n:"CodeDLC",d:"Minecraft 1.21.4",p:"w1m6bl6LLF39Dg.jpg"},
+{n:"Customix",d:"Minecraft 1.21.4",p:"customix_890cd3635636.jpg"},
+{n:"Delta",d:"Minecraft 1.21.4",p:"delta1214_42ec55f4c55c.jpg"},
+{n:"DeviceClient",d:"Minecraft 1.21.4",p:"deviceclient_7b78ff02877f.jpg"},
+{n:"Eclipse",d:"Minecraft 1.21.4",p:"eclipse_77a00fd10548.png"},
+{n:"Essence",d:"Minecraft 1.21.4",p:"V4J2D8diei7WlA.jpg"},
+{n:"ExosWare",d:"Minecraft 1.21.4",p:"tp_HjublwvzaNw.jpg"},
+{n:"Expensive",d:"Minecraft 1.21.4",p:"EjeKWeMpgVgvcg.jpg"},
+{n:"Exploit",d:"Minecraft 1.21.11",p:"Na0ozdzVX7QGmw.jpg"},
+{n:"Hydra",d:"Minecraft 1.21.4",p:"iAU1dyklhG1A0g.jpg"},
+{n:"Javelin",d:"Minecraft",p:"jf-UHs-0KOfUZA.jpg"},
+{n:"Liminar",d:"Minecraft 1.21.4",p:"liminar_70599d4e01a7.jpg"},
+{n:"MeowDLC",d:"Minecraft 1.21.4",p:"meowdlc_bfc86aa4bb04.jpg"},
+{n:"MercuryFree",d:"Minecraft 1.21.11",p:"ftuYbsI3eLn8OQ.jpg"},
+{n:"MerfoDLC",d:"Minecraft 1.21.4",p:"merfodlc_40106bab9e1a.jpg"},
+{n:"Minced",d:"Minecraft 1.21.4",p:"minced_cc10b656f22d.jpg"},
+{n:"Monoton",d:"Minecraft 1.16.5",p:"monoton_8dcf77a5f154.jpg"},
+{n:"Monoware",d:"Minecraft 1.21.4",p:"monoware_5e3cc1ebf023.jpg"},
+{n:"Moonward",d:"Minecraft 1.21.4",p:"moonward_f2e6dfa2e80b.jpg"},
+{n:"MountStar",d:"Minecraft 1.21.4",p:"ZJKgnuIW_qiBOw.jpg"},
+{n:"Mytheria",d:"Minecraft 1.21.4",p:"jR_vBbJNdp0U0A.jpg"},
+{n:"Neverlose",d:"Minecraft 1.21.11",p:"neverlose_d60ecd29f780.jpg"},
+{n:"NewCode",d:"Minecraft 1.21.4",p:"newcode_cc2f9123da8e.jpg"},
+{n:"Night DLC",d:"Minecraft 1.21.11",p:"nightdlc_8570d94eaf35.jpg"},
+{n:"Nightix",d:"Minecraft 1.21.11",p:"nightix_f813a3cecd3d.jpg"},
+{n:"Nuclear",d:"Minecraft 1.16.5",p:"nuclear_65fa3868e368.jpg"},
+{n:"Nursultan",d:"Minecraft 1.21.11",p:"HIR-SDRYvxaCSQ.jpg"},
+{n:"Phobia",d:"Minecraft 1.16.5",p:"6vFbxjgdPpyDhw.jpg"},
+{n:"Plague",d:"Minecraft 1.21.4",p:"zspnMgNi-V6arw.jpg"},
+{n:"Polaris",d:"Minecraft 1.21.11",p:"WVHEs85nJv-NPg.jpg"},
+{n:"Punch",d:"Minecraft 1.21.4",p:"QY8nBrycvFmygw.jpg"},
+{n:"Rich",d:"Minecraft 1.21.4",p:"s1RwQojwzifAmw.jpg"},
+{n:"Rockstar",d:"Minecraft 1.21.4",p:"rockstar_cbf62995c653.png"},
+{n:"Ryzen",d:"Minecraft 1.21.4",p:"ryzen_bd0b62f382c1.jpg"},
+{n:"Skuik",d:"Minecraft",p:"ag65Zdr7W8W4qg.jpg"},
+{n:"SkyCore",d:"Minecraft 1.21.4",p:"skycore_c65e0bf00c06.jpg"},
+{n:"SystemDLC",d:"Minecraft 1.21.4",p:"qxdaKD3qO8PqAg.jpg"},
+{n:"Velka",d:"Minecraft 1.21.4",p:"velka.png"},
+{n:"VenusFree",d:"Minecraft 1.16.5",p:"m4q-Se7pOMZNAA.jpg"},
+{n:"Vesence",d:"Minecraft 1.16.5",p:"jqkS22_Z_MzGGg.jpg"},
+{n:"Vibe",d:"Minecraft 1.16.5",p:"vibe_4440fd527f2f.jpg"},
+{n:"Volon",d:"Minecraft 1.21.4",p:"JCOjXBnzwCir1w.jpg"},
+{n:"Wexside",d:"Minecraft 1.16.5",p:"WthK9tgn7uG3bA.jpg"},
+{n:"Wild",d:"Minecraft 1.21.8",p:"GdumUzsLklgytg.jpg"},
+{n:"Winston",d:"Minecraft 1.16.5",p:"winston_c298f936c87e.jpg"},
+{n:"Wyvern",d:"Minecraft 1.21.4",p:"wyvern_49368fc2e854.jpg"},
+{n:"Zenith",d:"Minecraft 1.21.11",p:"zenith_d9270fd554fb.jpg"}
 ];
 
-let show=false;
-function render(list,anim){
-  const g=document.getElementById('grid');
-  g.innerHTML=list.map((c,i)=>{
-    const b=c.v<=5?'<span class="badge">NEW</span>':'';
-    const s=anim?`animation-delay:${i*35}ms`:'';
-    return `<div class="cc${anim?' anim':''}" style="${s}"><div class="cc-img"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${b}<div class="cc-body"><h3>${c.n}</h3><p>${c.d}</p></div></div>`;
-  }).join('');
-  g.querySelectorAll('.cc').forEach(c=>{c.onmousemove=e=>{const r=c.getBoundingClientRect();c.style.setProperty('--x',((e.clientX-r.left)/r.width*100)+'%');c.style.setProperty('--y',((e.clientY-r.top)/r.height*100)+'%')}});
-}
-function toggle(){show=!show;document.getElementById('showBtn').textContent=show?'Свернуть':'Показать все (59)';render(show?C:C.slice(0,12),true)}
-render(C.slice(0,12));
+let sh=false;
+function ren(l,a){const g=document.getElementById('grid');g.innerHTML=l.map((c,i)=>{const b=i<12?'':'<span class="bg2">NEW</span>';const s=a?`animation-delay:${i*30}ms`:'';return`<div class="cc${a?' a':''}" style="${s}"><div class="ci"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${b}<div class="cb"><h3>${c.n}</h3><p>${c.d}</p></div></div>`}).join('');g.querySelectorAll('.cc').forEach(c=>{c.onmousemove=e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')}})}
+function tog(){sh=!sh;document.getElementById('sBtn').textContent=sh?'Свернуть':'Показать все (59)';ren(sh?D:D.slice(0,12),true)}
+ren(D.slice(0,12));
 
-// Intro matrix
-const cv=document.getElementById('mCanvas'),cx=cv.getContext('2d');
-cv.width=window.innerWidth;cv.height=window.innerHeight;
-const cols=Math.floor(cv.width/14),drops=Array(cols).fill(1);
-function drawMatrix(){cx.fillStyle='rgba(0,0,0,.05)';cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle='#fff';cx.font='12px monospace';for(let i=0;i<drops.length;i++){cx.globalAlpha=.03;cx.fillText(String.fromCharCode(0x30A0+Math.random()*96),i*14,drops[i]*14);if(drops[i]*14>cv.height&&Math.random()>.975)drops[i]=0;drops[i++]}requestAnimationFrame(drawMatrix)}
-drawMatrix();
-
-// Intro counter
-const pct=document.getElementById('pct');let cnt=0;
-const ci=setInterval(()=>{cnt+=Math.floor(Math.random()*8)+1;if(cnt>=100){cnt=100;clearInterval(ci)}pct.textContent=cnt+'%'},40);
-
-// Intro dismiss
-let dismissed=false;
-function dismiss(){if(dismissed)return;dismissed=true;document.getElementById('intro').classList.add('hide');setTimeout(()=>{document.getElementById('intro').remove();document.body.style.overflow='';window.scrollTo(0,0)},1000)}
-document.getElementById('intro').addEventListener('click',dismiss);
-setTimeout(dismiss,4500);
+// Intro
+let done=false;
+function close(){if(done)return;done=true;const i=document.getElementById('intro');if(i){i.classList.add('out');setTimeout(()=>i.remove(),800)}document.body.style.overflow='';window.scrollTo(0,0)}
+document.getElementById('intro').addEventListener('click',close);
+setTimeout(close,4000);
 document.body.style.overflow='hidden';
 window.scrollTo(0,0);
 
+// Counter
+const pct=document.getElementById('pct');let c=0;const ci=setInterval(()=>{c+=Math.floor(Math.random()*7)+1;if(c>=100){c=100;clearInterval(ci)}pct.textContent=c+'%'},45);
+
 // Nav
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('show',scrollY>400));
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('on',scrollY>350));
 
 // Reveal
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}}),{threshold:.1});
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('v');obs.unobserve(x.target)}}),{threshold:.1});
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
-const tObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');tObs.unobserve(e.target)}}),{threshold:.2});
-document.querySelectorAll('.tl-i').forEach(el=>tObs.observe(el));
+const tO=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('v');tO.unobserve(x.target)}}),{threshold:.2});
+document.querySelectorAll('.tl-i').forEach(el=>tO.observe(el));
 
-// Download
-const DL='https://github.com/migodi2/migoralauncher/releases/download/v1.0/MigoraLauncherSetup.exe';
-document.getElementById('dl').onclick=e=>{e.preventDefault();location.href=DL};
-document.getElementById('dl3').onclick=e=>{e.preventDefault();location.href=DL};
-document.getElementById('navDl').onclick=e=>{e.preventDefault();location.href=DL};
+// DL
+const U='https://github.com/migodi2/migoralauncher/releases/download/v1.0/MigoraLauncherSetup.exe';
+document.getElementById('dl').onclick=e=>{e.preventDefault();location.href=U};
+document.getElementById('dl3').onclick=e=>{e.preventDefault();location.href=U};
+document.getElementById('nDl').onclick=e=>{e.preventDefault();location.href=U};
 </script>
 </body>
 </html>
