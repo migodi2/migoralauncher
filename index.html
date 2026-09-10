@@ -128,6 +128,9 @@ a{color:inherit;text-decoration:none}
 .c-card .badge.new{background:rgba(255,255,255,.06);color:var(--gray);border:1px solid rgba(255,255,255,.08)}
 .show-all-wrap{text-align:center;margin-top:48px}
 
+@keyframes cardIn{0%{opacity:0;transform:translateY(30px) scale(.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.c-card.animate-in{animation:cardIn .5s var(--ease) forwards;opacity:0}
+
 .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:2px}
 .bento-card{background:var(--card);padding:48px;border:1px solid var(--border);position:relative;overflow:hidden;transition:all .5s var(--ease)}
 .bento-card:hover{border-color:rgba(255,255,255,.08);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -403,11 +406,12 @@ const clients=[
 
 function renderStars(r){let s='';for(let i=1;i<=5;i++)s+=i<=Math.round(r)?'<b style="color:#fff">&#9733;</b>':'<span style="opacity:.15">&#9733;</span>';return s}
 
-function renderClients(list){
+function renderClients(list,animate){
   const g=document.getElementById('clientsGrid');
-  g.innerHTML=list.map(c=>{
+  g.innerHTML=list.map((c,i)=>{
     const badge=c.r>=4.5?'<span class="badge top">ТОП</span>':c.v<=5?'<span class="badge new">NEW</span>':'';
-    return `<div class="c-card"><div class="c-card-img"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${badge}<div class="c-card-body"><h3>${c.n}</h3><p>${c.d}</p><div class="stars">${renderStars(c.r)} <span>(${c.v})</span></div></div></div>`;
+    const delay=animate?`animation-delay:${i*40}ms`:'';
+    return `<div class="c-card${animate?' animate-in':''}" style="${delay}"><div class="c-card-img"><img src="${c.p}" alt="${c.n}" loading="lazy"></div>${badge}<div class="c-card-body"><h3>${c.n}</h3><p>${c.d}</p><div class="stars">${renderStars(c.r)} <span>(${c.v})</span></div></div></div>`;
   }).join('');
   g.querySelectorAll('.c-card').forEach(card=>{
     card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')});
@@ -418,7 +422,7 @@ let showAll=false;
 function showAllClients(){
   showAll=!showAll;
   document.getElementById('showAllBtn').textContent=showAll?'Свернуть':'Показать все (59)';
-  renderClients(showAll?clients:clients.slice(0,12));
+  renderClients(showAll?clients:clients.slice(0,12),true);
 }
 
 renderClients(clients.slice(0,12));
